@@ -1,12 +1,25 @@
 import axios from "axios";
 import React, { useState } from "react";
 import Header from "./Header";
+import { IoCopy } from "react-icons/io5";
 
 const App = () => {
   const [response, setResponse] = useState("");
   const [question, setQuestion] = useState("");
   const [loading, setLoading] = useState(false);
+  const [copy, setCopy] = useState("");
   const key = import.meta.env.VITE_GEMINI_KEY;
+
+  const handleCopy = () => {
+    navigator.clipboard
+      .writeText(response)
+      .then(() => {
+        alert("Text Copied");
+      })
+      .catch((err) => {
+        console.log("Failed to copy");
+      });
+  };
 
   async function generateAnswer() {
     setLoading(true);
@@ -25,7 +38,7 @@ const App = () => {
     <>
       {loading ? (
         <>
-          <div className="flex flex-col items-center justify-center h-screen">
+          <div className="flex flex-col gap-4 items-center justify-center h-screen">
             <Header />
             <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500 border-solid"></div>
           </div>
@@ -52,10 +65,18 @@ const App = () => {
           </div>
 
           {response && (
-            <div className="p-10 mt-4">
+            <div className="px-10 m-1">
               <div className="bg-gray-300 w-[100vh] h-full text-black rounded-2xl p-4 flex justify-center items-center">
-                <div className="border rounded border-blue-700 p-4 max-w-full">
-                  <pre className="overflow-y-auto break-words whitespace-pre-wrap max-w-full max-h-[500px] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
+                <div className=" relative border rounded border-blue-700 p-4 w-screen max-w-full">
+                  <div
+                    className="flex justify-end top-0 right-0 hover:cursor-pointer px-1 mb-1"
+                    title="Copy"
+                    onClick={handleCopy}
+                  >
+                    <IoCopy />
+                  </div>
+
+                  <pre className="overflow-y-auto break-words whitespace-pre-wrap max-w-full max-h-[400px] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200 leading-7 text-justify text-md px-5 mb-4">
                     {response}
                   </pre>
                 </div>
